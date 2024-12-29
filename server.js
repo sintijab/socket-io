@@ -13,7 +13,12 @@ const __dirname = path.dirname(__filename);
 const server = http.createServer(app);
 
 import { Server } from "socket.io";
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ["GET", "POST"],
+  }
+});
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
