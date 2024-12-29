@@ -1,11 +1,25 @@
 import express from 'express';
-import { sound_source, technicalPath } from './assets/answers_listening';
-import { emotional_connection, openPath } from './assets/answers_listening_simple';
-const app = express();
+import { sound_source, technicalPath } from './assets/answers_listening.js';
+import { emotional_connection, openPath } from './assets/answers_listening_simple.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import http from 'http';
 
-const http = require('http');
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 const server = http.createServer(app);
+
+import { Server } from "socket.io";
+const io = new Server(server);
+
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+app.get('/health', (req, res) => {
+  res.send({ message: 'Welcome to socket-io!' });
+});
 
 io.on('connection', (socket) => {
   socket.on('init', (callback) => {
@@ -78,6 +92,6 @@ io.engine.on("connection_error", (err) => {
 
 const port = process.env.PORT || 3333;
 server.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+  console.log(`Listening at http://localhost:${port}`);
 });
 server.on('error', console.error);
