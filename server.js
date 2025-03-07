@@ -22,6 +22,13 @@ const io = new Server(server, {
 });
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', ['https://cofun.digital']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
+  res.append('X-Frame-Options', 'https://cofun.digital');
+  next();
+});
 
 app.get('/health', (req, res) => {
   res.send({ message: 'Welcome to socket-io!' });
